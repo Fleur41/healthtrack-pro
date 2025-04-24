@@ -19,7 +19,13 @@ def create_app():
     ma.init_app(app)
     jwt.init_app(app)
     
+    from .routes import routes_bp
+    from .auth import auth_bp
+    
+    app.register_blueprint(routes_bp)
+    app.register_blueprint(auth_bp)
+    
     with app.app_context():
-        from . import routes, auth
         db.create_all()
-        return app
+    
+    return app

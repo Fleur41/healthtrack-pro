@@ -1,15 +1,19 @@
 from . import ma
-from .models import Client, Program
+from .models import Program, Client
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-class ProgramSchema(ma.SQLAlchemyAutoSchema):
+class ProgramSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Program
+        include_fk = True
+        load_instance = True
 
-class ClientSchema(ma.SQLAlchemyAutoSchema):
+class ClientSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Client
-    
-    programs = ma.Nested(ProgramSchema, many=True)
+        include_fk = True
+        load_instance = True
+        include_relationships = True
 
 program_schema = ProgramSchema()
 programs_schema = ProgramSchema(many=True)
