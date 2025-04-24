@@ -21,3 +21,5 @@ class Client(db.Model):
     email = db.Column(db.String(100), unique=True)
     address = db.Column(db.String(200))
     programs = db.relationship('Program', secondary=client_program, backref=db.backref('clients', lazy=True))
+
+    print("Client model initialized")
