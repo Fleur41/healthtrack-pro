@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 
@@ -14,6 +15,16 @@ jwt = JWTManager()
 def create_app():
     app = Flask(__name__)
     app.config.from_object('app.config.Config')
+
+     # Initialize CORS
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": ["http://localhost:5173"],  # Vite's default port
+            "methods": ["GET", "POST", "PUT", "DELETE"],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": True
+        }
+    })
     
     db.init_app(app)
     ma.init_app(app)
