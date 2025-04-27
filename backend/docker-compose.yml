@@ -2,24 +2,24 @@ version: '3.8'
 
 services:
   web:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
     environment:
-      - DATABASE_URL=mysql://healthtrack:healthtrack_password@db:3306/healthtrack_db
-      - SECRET_KEY=your_secure_secret_key
-      - JWT_SECRET_KEY=your_secure_jwt_key
+      DATABASE_URL: mysql://healthtrack:Admin@123@db:3306/healthtrack_db
+      SECRET_KEY: ${SECRET_KEY:-your_secure_secret_key}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-your_secure_jwt_key}
     depends_on:
       db:
         condition: service_healthy
     volumes:
-      - ./app:/app/app
+      - ./app:/app/app:cached
     networks:
       - healthtrack-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test: ["CMD-SHELL", "curl -f http://localhost:6000/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -29,19 +29,19 @@ services:
   db:
     image: mysql:8.0-debian
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
-      - MYSQL_DATABASE=healthtrack_db
-      - MYSQL_USER=healthtrack
-      - MYSQL_PASSWORD=healthtrack_password
-      - MYSQL_ROOT_PASSWORD=root_secure_password
+      MYSQL_DATABASE: healthtrack_db
+      MYSQL_USER: healthtrack
+      MYSQL_PASSWORD: Admin@123
+      MYSQL_ROOT_PASSWORD: Root@123
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - healthtrack-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "healthtrack", "-phealthtrack_password"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uhealthtrack -phealthtrack_password"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -49,7 +49,6 @@ services:
 
 volumes:
   mysql_data:
-    driver: local
 
 networks:
   healthtrack-network:
