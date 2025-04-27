@@ -9,6 +9,8 @@ class ProgramSchema(SQLAlchemyAutoSchema):
         load_instance = True
 
 class ClientSchema(SQLAlchemyAutoSchema):
+    programs = ma.Nested(ProgramSchema, many=True)
+    
     class Meta:
         model = Client
         include_fk = True
