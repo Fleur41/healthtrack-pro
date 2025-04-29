@@ -56,7 +56,7 @@ python run.py
 
 3. Start the frontend:
 ```bash
-cd frontend
+cd healthtrack-frontend
 npm install
 npm run dev
 ```
@@ -97,7 +97,7 @@ pytest
 
 ### Frontend
 ```bash
-cd frontend
+cd healthtrack-frontend
 npm test
 ```
 
